@@ -9,6 +9,7 @@ import PieChart from "./PieChart";
 import Appointments from "./Appointments";
 import Projects from "./Projects";
 import BarChart from "./BarChart";
+import Table from '../../../components/Table'
 
 // const Default = () => (
 //   <Container fluid className="p-0">
@@ -25,8 +26,8 @@ import BarChart from "./BarChart";
 
 const Default = () => {
   const isLogin = localStorage.getItem("token")
-  const [page, setPage] = useState(10)
-  const [perPage, setPerPage] = useState(1)
+  const [page, setPage] = useState(0)
+  const [perPage, setPerPage] = useState(10)
 
   useEffect(() => {
     console.log(isLogin, "sda")
@@ -39,7 +40,7 @@ const Default = () => {
     <Container fluid className="p-0">
       <Row>
         <Col lg="6" xl="12" className="d-flex">
-          <Projects />
+          <Table page={page} perPage={perPage} />
         </Col>
       </Row>
     </Container>
