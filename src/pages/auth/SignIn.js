@@ -17,14 +17,9 @@ import { toastr } from 'react-redux-toastr'
 import avatar from "../../assets/img/avatars/avatar.jpg";
 
 const SignIn = () => {
-  const [userName, setUserName] = useState("admindev")
-  const [pass, setPassWord] = useState("Abc@123")
+  const [userName, setUserName] = useState("")
+  const [pass, setPassWord] = useState("")
   const handleLogin = () => {
-    // const dataConfig ={
-    //   type: "ADMIN",
-    //   "password": "Abc@123",
-    //   "username": "admindev"
-    // }
     const dataConfig = {
       type: "ADMIN",
       password: pass,
