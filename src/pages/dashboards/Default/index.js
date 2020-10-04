@@ -27,7 +27,7 @@ import Table from '../../../components/Table'
 const Default = () => {
   const isLogin = localStorage.getItem("token")
   const [page, setPage] = useState(0)
-  const [perPage, setPerPage] = useState(10)
+  const [perPage, setPerPage] = useState({ value: 10, label: 10 })
 
   useEffect(() => {
     console.log(isLogin, "sda")
@@ -40,7 +40,7 @@ const Default = () => {
     <Container fluid className="p-0">
       <Row>
         <Col lg="6" xl="12" className="d-flex">
-          <Table page={page} perPage={perPage} />
+          <Table page={page} perPage={perPage} setPage={setPage} setPerPage={setPerPage} />
         </Col>
       </Row>
     </Container>
